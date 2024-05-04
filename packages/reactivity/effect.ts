@@ -1,3 +1,4 @@
+// 存
 let activeEffect;
 
 class ReactiveEffect {
@@ -7,10 +8,11 @@ class ReactiveEffect {
   }
   run() {
     activeEffect = this;
-    this._fn();
+    return this._fn();
   }
 }
 
+// 存储所有的依赖
 const targetMap = new WeakMap();
 
 export function track(target, key) {
@@ -44,4 +46,6 @@ export function effect(fn) {
   const _effect = new ReactiveEffect(fn);
   // 需要一上来直接调用
   _effect.run();
+
+  return _effect.run.bind(_effect);
 }
