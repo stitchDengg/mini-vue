@@ -3,8 +3,10 @@ let activeEffect;
 
 class ReactiveEffect {
   private _fn: Function;
-  constructor(fn) {
+  public scheduler?: Function;
+  constructor(fn, scheduler?) {
     this._fn = fn;
+    this.scheduler = scheduler;
   }
   run() {
     activeEffect = this;
@@ -38,12 +40,24 @@ export function trigger(target, key) {
   const dep = depsMap.get(key);
   if (!dep) return;
   dep.forEach((effect) => {
-    effect.run();
+    if (effect.scheduler) {
+      // 如果有这个参数就执行scheduler
+      effect.scheduler();
+    } else {
+      effect.run();
+    }
   });
 }
 
-export function effect(fn) {
-  const _effect = new ReactiveEffect(fn);
+/**
+ *
+ * @param fn 传入需要收集依赖的函数
+ * @param option 传入其他参数
+ * @returns 返回一个函数runner，调用这个函数会执行fn
+ */
+export function effect(fn, options?) {
+  const { scheduler } = options || {};
+  const _effect = new ReactiveEffect(fn, scheduler);
   // 需要一上来直接调用
   _effect.run();
 

@@ -32,15 +32,6 @@ importers:
 
   packages/reactivity:
     devDependencies:
-      '@babel/core':
-        specifier: ^7.15.0
-        version: 7.24.4
-      '@babel/preset-env':
-        specifier: ^7.15.0
-        version: 7.24.4(@babel/core@7.24.4)
-      '@babel/preset-typescript':
-        specifier: ^7.15.0
-        version: 7.24.1(@babel/core@7.24.4)
       '@types/jest':
         specifier: ^27.0.0
         version: 27.5.2
@@ -50,6 +41,12 @@ importers:
       jest:
         specifier: ^27.1.1
         version: 27.5.1
+
+  packages/vue:
+    dependencies:
+      '@mini-vue/reactivity':
+        specifier: workspace:^
+        version: link:../reactivity
 
 packages:
 
