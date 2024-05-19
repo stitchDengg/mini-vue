@@ -106,5 +106,6 @@ export function effect(fn, options: any = {}) {
  */
 export function stop(runner) {
   // 将这个函数从依赖中移除即可
+  // !学习一下这个写法
   runner.effect.stop();
 }

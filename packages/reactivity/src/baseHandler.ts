@@ -1,13 +1,20 @@
 import { track, trigger } from "./effect";
+import { ReactiveFlags } from "./reactive";
 
 // 使用高阶函数的方式，创建getter和setter
 function createGetter(isReadonly = false) {
   return function get(target, key) {
     const res = Reflect.get(target, key);
     if (!isReadonly) {
+      if (key === ReactiveFlags.IS_REACTIVE) {
+        return !isReadonly;
+      }
       // 收集依赖
       track(target, key);
     } else {
+      if (key === ReactiveFlags.IS_READONLY) {
+        return true;
+      }
       console.log(console.warn);
       // 只读的话，发出警告
       console.warn(`key:${key} set失败，target 是readonly的`, target);

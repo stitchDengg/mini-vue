@@ -1,4 +1,4 @@
-import { reactive } from "../src/reactive";
+import { isReactive, reactive } from "../src/reactive";
 
 describe("reactive", () => {
   it("happy path", () => {
@@ -9,5 +9,9 @@ describe("reactive", () => {
 
     // 期望observed.foo等于1
     expect(observed.foo).toBe(1);
+
+    // 判断这个对象是不是reactive对象
+    expect(isReactive(observed)).toBe(true);
+    expect(isReactive(original)).toBe(false);
   });
 });
