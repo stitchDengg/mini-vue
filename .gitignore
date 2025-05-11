@@ -1,6 +1,7 @@
 dist
 .DS_Store
 node_modules
+node_modules/
 coverage
 temp
 explorations
