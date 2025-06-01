@@ -15,7 +15,6 @@ function createGetter(isReadonly = false) {
       if (key === ReactiveFlags.IS_READONLY) {
         return true;
       }
-      console.log(console.warn);
       // 只读的话，发出警告
       console.warn(`key:${key} set失败，target 是readonly的`, target);
     }

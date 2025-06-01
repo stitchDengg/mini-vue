@@ -2,7 +2,7 @@ import { effect, stop } from "../src/effect";
 import { reactive } from "../src/reactive";
 
 describe("effect", () => {
-  it("happy path", () => {
+  it("effect should effective", () => {
     const user = reactive({
       age: 10,
     });
@@ -71,7 +71,10 @@ describe("effect", () => {
     obj.prop = 2;
     expect(dummy).toBe(2);
     stop(runner);
-    obj.prop = 3;
+    // obj.prop = 3;
+    // 这里会触发两次effect，因为同事触发set和get
+    // obj.prop = obj.prop + 1;
+    obj.prop++;
     expect(dummy).toBe(2);
 
     // stopped effect should still be manually callable

@@ -1,12 +1,14 @@
 import { extend } from "@mini-vue/shared/src";
 // 存储当前的收集依赖的实例
 let activeEffect;
+let shouldTrack;
 
 // 清除依赖
 function cleanupEffect(effect) {
   effect.deps.filter((dep) => {
     dep.delete(effect);
   });
+  effect.deps.length = 0;
 }
 
 class ReactiveEffect {
@@ -27,8 +29,17 @@ class ReactiveEffect {
 
   // 执行函数依赖
   run() {
+    // 会收集依赖
+    if (!this.active) {
+      this._fn();
+    }
+
+    shouldTrack = true;
     activeEffect = this;
-    return this._fn();
+    const result = this._fn();
+    // reset
+    shouldTrack = false;
+    return result;
   }
 
   stop() {
@@ -45,7 +56,12 @@ class ReactiveEffect {
 // 存储所有的依赖
 const targetMap = new WeakMap();
 
+function isTracking() {
+  return shouldTrack && activeEffect !== undefined;
+}
+
 export function track(target, key) {
+  if (!isTracking()) return;
   // target => key => dep
   let depsMap = targetMap.get(target);
   if (!depsMap) {
@@ -59,7 +75,10 @@ export function track(target, key) {
     depsMap.set(key, dep);
   }
 
-  if (!activeEffect) return;
+  // 已经在dep中了
+  if (dep.has(activeEffect)) {
+    return;
+  }
 
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
