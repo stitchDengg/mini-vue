@@ -34,6 +34,7 @@ class ReactiveEffect {
       this._fn();
     }
 
+    // 这里处理保证只有在run的时候才去收集依赖 其他情况的get不收集 避免重复收集依赖
     shouldTrack = true;
     activeEffect = this;
     const result = this._fn();

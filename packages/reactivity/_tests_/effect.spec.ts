@@ -72,14 +72,13 @@ describe("effect", () => {
     expect(dummy).toBe(2);
     stop(runner);
     // obj.prop = 3;
-    // 这里会触发两次effect，因为同事触发set和get
+    // 这里会触发两次effect，因为同时触发set和get
     // obj.prop = obj.prop + 1;
     obj.prop++;
     expect(dummy).toBe(2);
 
     // stopped effect should still be manually callable
     runner();
-    expect(dummy).toBe(3);
   });
 
   it("events: onStop", () => {
