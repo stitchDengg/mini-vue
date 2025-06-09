@@ -11,7 +11,7 @@ function cleanupEffect(effect) {
   effect.deps.length = 0;
 }
 
-class ReactiveEffect {
+export class ReactiveEffect {
   /** 传入的函数 */
   private _fn: Function;
   /** 实例状态，调用stop后为false */
@@ -57,8 +57,18 @@ class ReactiveEffect {
 // 存储所有的依赖
 const targetMap = new WeakMap();
 
-function isTracking() {
+export function isTracking() {
   return shouldTrack && activeEffect !== undefined;
+}
+
+// 单纯的收集依赖
+export function trackEffects(dep: Set<any>) {
+  // 如果依赖中已经存在这个activeEffect，则直接返回
+  if (dep.has(activeEffect)) {
+    return;
+  }
+  dep.add(activeEffect);
+  activeEffect.deps.push(dep);
 }
 
 export function track(target, key) {
@@ -81,8 +91,17 @@ export function track(target, key) {
     return;
   }
 
-  dep.add(activeEffect);
-  activeEffect.deps.push(dep);
+  trackEffects(dep);
+}
+
+export function triggerEffects(dep) {
+  dep.forEach((effect) => {
+    if (effect.scheduler) {
+      effect.scheduler();
+    } else {
+      effect.run();
+    }
+  });
 }
 
 export function trigger(target, key) {
@@ -90,14 +109,8 @@ export function trigger(target, key) {
   if (!depsMap) return;
   const dep = depsMap.get(key);
   if (!dep) return;
-  dep.forEach((effect) => {
-    if (effect.scheduler) {
-      // 如果有这个参数就执行scheduler
-      effect.scheduler();
-    } else {
-      effect.run();
-    }
-  });
+
+  triggerEffects(dep);
 }
 
 /**
