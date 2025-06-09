@@ -1,4 +1,4 @@
-import { isReactive, isReadonly, readonly } from "../src/reactive";
+import { isReactive, isReadonly, isProxy, readonly } from "../src/reactive";
 
 describe("readonly", () => {
   it("should make nested values readonly", () => {
@@ -15,5 +15,17 @@ describe("readonly", () => {
     expect(isReadonly(wrapped.bar)).toBe(true);
     expect(isReactive(original.bar)).toBe(false);
     expect(isReadonly(original.bar)).toBe(false);
+    // 判断一个对象是不是isProxy
+    expect(isProxy(wrapped)).toBe(true);
+    expect(isProxy(original)).toBe(false);
+  });
+
+  it("warn when call set", () => {
+    console.warn = jest.fn();
+    const user = readonly({
+      age: 10,
+    });
+    user.age = 11;
+    expect(console.warn).toHaveBeenCalled();
   });
 });

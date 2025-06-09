@@ -1,7 +1,7 @@
-import { isReactive, reactive } from "../src/reactive";
+import { isReactive, isProxy, reactive } from "../src/reactive";
 import { describe, expect, it } from "@jest/globals";
-import { ReactiveFlags } from "../src/reactive";
 import { effect } from "../src/effect";
+import { ReactiveFlags } from "../src/constant";
 
 describe("reactive", () => {
   it("object ", () => {
@@ -17,6 +17,10 @@ describe("reactive", () => {
     // 判断这个对象是不是reactive对象
     expect(isReactive(observed)).toBe(true);
     expect(isReactive(original)).toBe(false);
+
+    // 判断一个对象是不是isProxy
+    expect(isProxy(observed)).toBe(true);
+    expect(isProxy(original)).toBe(false);
   });
 
   it("nested reactive", () => {
