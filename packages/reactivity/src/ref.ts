@@ -1,11 +1,13 @@
 import { hasChanged, isObject } from "@mini-vue/shared/src";
 import { isTracking, trackEffects, triggerEffects } from "./effect";
 import { reactive } from "./reactive";
+import { ReactiveFlags } from "./constant";
 
 class RefImpl {
-  private _value: any;
+  _value: any;
   private _rawValue: any;
   public dep: Set<any>;
+  public readonly [ReactiveFlags.IS_REF] = true;
 
   constructor(value: any) {
     // 如果value是一个普通的值，直接赋值
@@ -45,4 +47,12 @@ function convertReactive(value: any) {
 
 export function ref(value: any) {
   return new RefImpl(value);
+}
+
+export function isRef(value: any) {
+  return !!value[ReactiveFlags.IS_REF];
+}
+
+export function unRef(ref: RefImpl | any) {
+  return isRef(ref) ? ref.value : ref;
 }
