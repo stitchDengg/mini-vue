@@ -56,3 +56,21 @@ export function isRef(value: any) {
 export function unRef(ref: RefImpl | any) {
   return isRef(ref) ? ref.value : ref;
 }
+
+export function proxyRefs(objectWithRefs: any) {
+  return new Proxy(objectWithRefs, {
+    get(target, key) {
+      // get => 如果取的值是ref，则返回ref.value 否则返回其本身
+      return unRef(Reflect.get(target, key));
+    },
+
+    set(target, key, value) {
+      // set => 如果设置的值是ref，则设置ref.value 否则设置其本身
+      if (isRef(target[key]) && !isRef(value)) {
+        return (target[key].value = value);
+      } else {
+        return Reflect.set(target, key, value);
+      }
+    },
+  });
+}

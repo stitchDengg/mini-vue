@@ -23,8 +23,9 @@ export class ReactiveEffect {
   /** 传入的停止函数 */
   public onStop?: Function;
 
-  constructor(fn) {
+  constructor(fn, scheduler?: Function) {
     this._fn = fn;
+    this.scheduler = scheduler;
   }
 
   // 执行函数依赖
