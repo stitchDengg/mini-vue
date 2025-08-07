@@ -1,7 +1,7 @@
 {
-  "name": "@mini-vue/reactivity",
+  "name": "@mini-vue/runtime-core",
   "version": "1.0.0",
-  "description": "@mini-vue/reactivity",
+  "description": "@mini-vue/runtime-core",
   "main": "index.js",
   "scripts": {
     "test": "jest"
@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mini-vue/shared": "workspace:^"
+
   }
 }
